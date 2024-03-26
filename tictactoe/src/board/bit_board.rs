@@ -2,7 +2,8 @@ use core::fmt::Display;
 use core::fmt::Formatter;
 
 /// `BitBoard` is a u16, but only 9 bits are used.
-pub struct BitBoard(u16);
+#[derive(Clone, Copy)]
+pub struct BitBoard(pub u16);
 
 impl Display for BitBoard {
     fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {

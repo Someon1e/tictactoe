@@ -2,18 +2,16 @@
 #![warn(clippy::pedantic)]
 #![warn(clippy::nursery)]
 
-use board::Board;
+use tictactoe::board::Board;
 use std::io::Write;
 use std::io::{stdin, stdout, BufRead, StdinLock, StdoutLock};
-
-pub mod bit_board;
-pub mod board;
 
 struct Game<'a> {
     stdin: StdinLock<'a>,
     stdout: StdoutLock<'a>,
     input: String,
     board: Board,
+    x_to_move: bool,
 }
 
 impl<'a> Game<'a> {
@@ -45,7 +43,7 @@ impl<'a> Game<'a> {
                 continue;
             };
 
-            let bit_board = if self.board.x_to_move {
+            let bit_board = if self.x_to_move {
                 &mut self.board.x
             } else {
                 &mut self.board.o
@@ -55,10 +53,10 @@ impl<'a> Game<'a> {
             } else {
                 bit_board.set(row * 3 + column);
                 if bit_board.has_won() {
-                    println!("{} wins!", if self.board.x_to_move {"x"} else {"o"});
+                    println!("{} wins!", if self.x_to_move {"x"} else {"o"});
                     break;
                 }
-                self.board.x_to_move = !self.board.x_to_move;
+                self.x_to_move = !self.x_to_move;
             }
 
             self.input.clear();
@@ -72,6 +70,7 @@ fn main() {
         stdout: stdout().lock(),
         input: String::new(),
         board: Board::EMPTY,
+        x_to_move: true
     };
 
     game.run();

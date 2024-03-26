@@ -1,14 +1,14 @@
 use core::fmt::Display;
 use core::fmt::Formatter;
+use crate::board::bit_board::BitBoard;
 
-use crate::bit_board::BitBoard;
+pub mod bit_board;
 
 /// Board uses two `BitBoards`: one for X, one for O
+#[derive(Clone, Copy)]
 pub struct Board {
     pub x: BitBoard,
     pub o: BitBoard,
-
-    pub x_to_move: bool,
 }
 
 impl Display for Board {
@@ -39,7 +39,6 @@ impl Display for Board {
 
 impl Board {
     pub const EMPTY: Self = Self {
-        x_to_move: true,
         x: BitBoard::EMPTY,
         o: BitBoard::EMPTY,
     };
