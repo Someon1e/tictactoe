@@ -36,8 +36,7 @@ impl Engine {
 
         let mut best_score = Score::UNKNOWN;
 
-        const PLACES: [u16; 9] = [1, 1 << 1, 1 << 2, 1 << 3, 1 << 4, 1 << 5, 1 << 6, 1 << 7, 1 << 8];
-        for place in PLACES {
+        for place in BitBoard::PLACES {
             if BitBoard(board.x.0 | board.o.0).contains(&BitBoard(place)) {
                 continue;
             }

@@ -69,6 +69,8 @@ impl BitBoard {
         0b001
     );
 
+    pub const PLACES: [u16; 9] = [1, 1 << 1, 1 << 2, 1 << 3, 1 << 4, 1 << 5, 1 << 6, 1 << 7, 1 << 8];
+
     pub fn set(&mut self, index: u8) {
         self.0 |= 1 << index;
     }
