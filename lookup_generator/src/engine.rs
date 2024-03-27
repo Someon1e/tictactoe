@@ -6,7 +6,7 @@ pub struct Engine {
 
 const LOOKUP_SIZE: usize = 1 << 18;
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Debug, Eq)]
 pub struct Score(pub i8);
 impl Score {
     pub const UNKNOWN: Self = Self(-i8::MAX);
@@ -29,21 +29,13 @@ impl Engine {
 
         let enemy_board = if x_to_move { board.o } else { board.x };
         if enemy_board.has_won() {
-            self.transposition_table[(board.x.0 as usize) | (board.o.0 as usize) << 9] = Score::LOSING;
+            self.transposition_table[(board.x.0 as usize) | (board.o.0 as usize) << 9] =
+                Score::LOSING;
             return Score::LOSING;
         }
 
         let mut best_score = Score::UNKNOWN;
-        for place in [
-            1,
-            1 << 2,
-            1 << 3,
-            1 << 4,
-            1 << 5,
-            1 << 6,
-            1 << 7,
-            1 << 8
-        ] {
+        for place in [1, 1 << 2, 1 << 3, 1 << 4, 1 << 5, 1 << 6, 1 << 7, 1 << 8] {
             if BitBoard(board.x.0 | board.o.0).contains(&BitBoard(place)) {
                 continue;
             }
