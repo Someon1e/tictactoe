@@ -84,6 +84,11 @@ impl BitBoard {
     }
 
     #[must_use]
+    pub const fn count(&self) -> u32 {
+        self.0.count_ones()
+    }
+
+    #[must_use]
     pub const fn has_won(&self) -> bool {
         self.contains(&Self::BOTTOM_ROW)
             || self.contains(&Self::MIDDLE_ROW)
