@@ -3,7 +3,10 @@
 #![warn(clippy::nursery)]
 
 use engine::Engine;
-use std::io::{stdout, Write};
+use std::{
+    fs,
+    io::{stdout, Write},
+};
 use tictactoe::board::{bit_board::BitBoard, Board};
 
 use crate::engine::Score;
@@ -17,6 +20,7 @@ fn main() {
 
     let mut stdout = stdout().lock();
 
+    // Pretty output of board and score
     for (position, score) in engine.transposition_table.iter().enumerate() {
         if *score == Score::UNKNOWN {
             continue;
@@ -37,4 +41,46 @@ fn main() {
         writeln!(stdout, ">>>>>><<<<<<").unwrap();
         writeln!(stdout).unwrap();
     }
+
+    // Generate rust match expression
+    let mut matcher = String::new();
+    matcher.push_str("match position {\n");
+
+    let mut drawing = String::new();
+    let mut winning = String::new();
+    let mut losing = String::new();
+
+    for (position, score) in engine.transposition_table.iter().enumerate() {
+        if *score == Score::UNKNOWN {
+            continue;
+        };
+
+        let x = BitBoard((position & 0b111_111_111) as u16);
+        let o = BitBoard((position >> 9) as u16);
+
+        let x_to_move = o.count() == x.count();
+        match if x_to_move { *score } else { Score(-score.0) } {
+            Score::LOSING => losing.push_str(&format!("{position} | ")),
+            Score::DRAWING => drawing.push_str(&format!("{position} | ")),
+            Score::WINNING => winning.push_str(&format!("{position} | ")),
+            _ => unreachable!(),
+        }
+    }
+    matcher.push('\t');
+    matcher.push_str(&drawing[..drawing.len() - 2]);
+    matcher.push_str("=> 0,\n");
+
+    matcher.push('\t');
+    matcher.push_str(&winning[..winning.len() - 2]);
+    matcher.push_str("=> 1,\n");
+
+    matcher.push('\t');
+    matcher.push_str(&losing[..losing.len() - 2]);
+    matcher.push_str("=> -1,\n");
+
+    matcher.push('\t');
+    matcher.push_str("_ => unreachable!(),\n");
+
+    matcher.push_str("};");
+    fs::write("match.rs", matcher).unwrap();
 }
