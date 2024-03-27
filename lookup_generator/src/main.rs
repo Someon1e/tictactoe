@@ -3,7 +3,7 @@
 #![warn(clippy::nursery)]
 
 use engine::Engine;
-use std::time::Instant;
+use std::io::{stdout, Write};
 use tictactoe::board::{bit_board::BitBoard, Board};
 
 use crate::engine::Score;
@@ -15,6 +15,8 @@ fn main() {
     let mut engine = Engine::new();
     engine.search(Board::EMPTY, true);
 
+    let mut stdout = stdout().lock();
+
     for (position, score) in engine.transposition_table.iter().enumerate() {
         if *score == Score::UNKNOWN {
             continue;
@@ -25,14 +27,14 @@ fn main() {
 
         let x_to_move = o.count() == x.count();
 
-        println!("{}", Board { x, o });
+        writeln!(stdout, "{}", Board { x, o }).unwrap();
         match if x_to_move { *score } else { Score(-score.0) } {
-            Score::LOSING => println!("O is winning"),
-            Score::DRAWING => println!("This can be drawn"),
-            Score::WINNING => println!("X is winning"),
+            Score::LOSING => writeln!(stdout, "O is winning").unwrap(),
+            Score::DRAWING => writeln!(stdout, "This can be drawn").unwrap(),
+            Score::WINNING => writeln!(stdout, "X is winning").unwrap(),
             _ => unreachable!(),
         }
-        println!(">>>>>><<<<<<");
-        println!();
+        writeln!(stdout, ">>>>>><<<<<<").unwrap();
+        writeln!(stdout).unwrap();
     }
 }
