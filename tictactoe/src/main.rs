@@ -623,9 +623,10 @@ impl<'a> Game<'a> {
             };
             // Skip switching self.x_to_move, because it won't be used anyway
 
-            let evaluation = match self.ai_side.unwrap() {
-                true => self.evaluate_for_x(),
-                false => -self.evaluate_for_x(),
+            let evaluation = if self.ai_side.unwrap() {
+                self.evaluate_for_x()
+            } else {
+                -self.evaluate_for_x()
             };
             if evaluation >= best_score {
                 if evaluation != best_score {
