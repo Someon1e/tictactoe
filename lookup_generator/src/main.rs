@@ -59,10 +59,11 @@ fn main() {
         let o = BitBoard((position >> 9) as u16);
 
         let x_to_move = o.count() == x.count();
+        let text = &format!("{:#04x} | ", position);
         match if x_to_move { *score } else { Score(-score.0) } {
-            Score::LOSING => losing.push_str(&format!("{position} | ")),
-            Score::DRAWING => drawing.push_str(&format!("{position} | ")),
-            Score::WINNING => winning.push_str(&format!("{position} | ")),
+            Score::LOSING => losing.push_str(text),
+            Score::DRAWING => drawing.push_str(text),
+            Score::WINNING => winning.push_str(text),
             _ => unreachable!(),
         }
     }
