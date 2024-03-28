@@ -1,6 +1,6 @@
+use crate::board::bit_board::BitBoard;
 use core::fmt::Display;
 use core::fmt::Formatter;
-use crate::board::bit_board::BitBoard;
 
 pub mod bit_board;
 
