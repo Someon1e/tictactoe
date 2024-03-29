@@ -2,6 +2,7 @@ use crate::board::bit_board::BitBoard;
 use core::fmt::Display;
 use core::fmt::Formatter;
 
+#[allow(clippy::module_name_repetitions)]
 pub mod bit_board;
 
 /// Board uses two `BitBoards`: one for X, one for O

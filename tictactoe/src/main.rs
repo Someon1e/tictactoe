@@ -45,6 +45,7 @@ impl<'a> Game<'a> {
         self.input.clear();
         Some((column, row))
     }
+    #[allow(clippy::too_many_lines)]
     pub fn evaluate_for_x(&self) -> i8 {
         match (self.board.x.0 as usize) | (self.board.o.0 as usize) << 9 {
             0x00 | 0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40 | 0x80 | 0x100 | 0x202
@@ -741,7 +742,11 @@ impl<'a> Game<'a> {
         } else {
             &mut self.board.o
         };
-        bit_board.0 |= 1 << best_moves.0.trailing_zeros() as u16;
+
+        #[allow(clippy::cast_possible_truncation)]
+        {
+            bit_board.0 |= 1 << best_moves.0.trailing_zeros() as u16;
+        }
 
         self.x_to_move = !self.x_to_move;
 

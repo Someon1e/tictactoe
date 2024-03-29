@@ -54,7 +54,7 @@ impl Engine {
         }
 
         if best_score == Score::UNKNOWN {
-            best_score = Score::DRAWING
+            best_score = Score::DRAWING;
         }
         self.transposition_table[(board.x.0 as usize) | (board.o.0 as usize) << 9] = best_score;
         best_score

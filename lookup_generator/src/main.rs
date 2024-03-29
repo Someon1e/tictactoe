@@ -26,8 +26,13 @@ fn main() {
             continue;
         };
 
-        let x = BitBoard((position & 0b111_111_111) as u16);
-        let o = BitBoard((position >> 9) as u16);
+        #[allow(clippy::cast_possible_truncation)]
+        let (x, o) = {
+            (
+                BitBoard((position & 0b111_111_111) as u16),
+                BitBoard((position >> 9) as u16),
+            )
+        };
 
         let x_to_move = o.count() == x.count();
 
@@ -55,11 +60,16 @@ fn main() {
             continue;
         };
 
-        let x = BitBoard((position & 0b111_111_111) as u16);
-        let o = BitBoard((position >> 9) as u16);
+        #[allow(clippy::cast_possible_truncation)]
+        let (x, o) = {
+            (
+                BitBoard((position & 0b111_111_111) as u16),
+                BitBoard((position >> 9) as u16),
+            )
+        };
 
         let x_to_move = o.count() == x.count();
-        let text = &format!("{:#04x} | ", position);
+        let text = &format!("{position:#04x} | ");
         match if x_to_move { *score } else { Score(-score.0) } {
             Score::LOSING => losing.push_str(text),
             Score::DRAWING => drawing.push_str(text),
