@@ -22,15 +22,16 @@ impl Engine {
         }
     }
     pub fn search(&mut self, board: Board, x_to_move: bool) -> Score {
-        let saved = self.transposition_table[(board.x.0 as usize) | (board.o.0 as usize) << 9];
+        let index = (board.x.0 as usize) | (board.o.0 as usize) << 9;
+
+        let saved = self.transposition_table[index];
         if saved != Score::UNKNOWN {
             return saved;
         }
 
         let enemy_board = if x_to_move { board.o } else { board.x };
         if enemy_board.has_won() {
-            self.transposition_table[(board.x.0 as usize) | (board.o.0 as usize) << 9] =
-                Score::LOSING;
+            self.transposition_table[index] = Score::LOSING;
             return Score::LOSING;
         }
 
@@ -56,7 +57,7 @@ impl Engine {
         if best_score == Score::UNKNOWN {
             best_score = Score::DRAWING;
         }
-        self.transposition_table[(board.x.0 as usize) | (board.o.0 as usize) << 9] = best_score;
+        self.transposition_table[index] = best_score;
         best_score
     }
 }
