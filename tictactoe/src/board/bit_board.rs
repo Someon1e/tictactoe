@@ -113,7 +113,7 @@ impl BitBoard {
     }
 
     #[must_use]
-    pub fn first(&self) -> u32 {
+    pub const fn first(&self) -> u32 {
         self.0.trailing_zeros()
     }
 
