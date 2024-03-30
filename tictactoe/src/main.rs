@@ -700,18 +700,18 @@ impl<'a> Game<'a> {
     }
     pub fn ai_turn(&mut self) -> bool {
         let (mut best_moves, mut best_score) = (BitBoard::EMPTY, -1);
-        for place in BitBoard::PLACES {
-            if (self.board.x | self.board.o).contains(&BitBoard::new(place)) {
-                continue;
-            }
+        
+        let mut not_occupied = !(self.board.x | self.board.o) & BitBoard::FULL;
+        while not_occupied != BitBoard::EMPTY {
+            let place = BitBoard::new(1 << not_occupied.pop());
 
             let previous = if self.x_to_move {
                 let previous = self.board.x;
-                self.board.x |= BitBoard::new(place);
+                self.board.x |= place;
                 previous
             } else {
                 let previous = self.board.o;
-                self.board.o |= BitBoard::new(place);
+                self.board.o |= place;
                 previous
             };
             // Skip switching self.x_to_move, because it won't be used anyway
@@ -726,7 +726,7 @@ impl<'a> Game<'a> {
                     best_score = evaluation;
                     best_moves = BitBoard::EMPTY;
                 }
-                best_moves |= BitBoard::new(place);
+                best_moves |= place;
             }
 
             if self.x_to_move {
