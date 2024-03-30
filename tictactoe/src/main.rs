@@ -768,7 +768,7 @@ impl<'a> Game<'a> {
                     writeln!(
                         self.stdout,
                         "{} wins!",
-                        if self.x_to_move { "x" } else { "o" }
+                        if self.x_to_move { "o" } else { "x" }
                     )
                     .unwrap();
                     break;
