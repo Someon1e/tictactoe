@@ -37,11 +37,9 @@ impl Engine {
 
         let mut best_score = Score::UNKNOWN;
 
-        for place in BitBoard::PLACES {
-            if BitBoard(board.x.0 | board.o.0).contains(&BitBoard(place)) {
-                continue;
-            }
-
+        let mut not_occupied = BitBoard(!(board.x.0 | board.o.0) & BitBoard::FULL.0);
+        while not_occupied != BitBoard::EMPTY {
+            let place = 1 << not_occupied.pop();
             let mut new_board = board;
             if x_to_move {
                 new_board.x.0 |= place;

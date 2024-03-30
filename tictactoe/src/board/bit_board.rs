@@ -2,7 +2,7 @@ use core::fmt::Display;
 use core::fmt::Formatter;
 
 /// `BitBoard` is a u16, but only 9 bits are used.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub struct BitBoard(pub u16);
 
 impl Display for BitBoard {
@@ -32,6 +32,7 @@ macro_rules! board {
 
 impl BitBoard {
     pub const EMPTY: Self = Self(0);
+    pub const FULL: Self = Self(0b111_111_111);
 
     pub const BOTTOM_ROW: Self = Self(0b111);
     pub const MIDDLE_ROW: Self = Self(0b111 << 3);
@@ -98,6 +99,13 @@ impl BitBoard {
     #[must_use]
     pub const fn count(&self) -> u32 {
         self.0.count_ones()
+    }
+
+    #[must_use]
+    pub fn pop(&mut self) -> u32 {
+        let index = self.0.trailing_zeros();
+        self.0 &= self.0 - 1;
+        index
     }
 
     #[must_use]
