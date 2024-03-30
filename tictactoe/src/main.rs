@@ -47,7 +47,7 @@ impl<'a> Game<'a> {
     }
     #[allow(clippy::too_many_lines)]
     pub fn evaluate_for_x(&self) -> i8 {
-        let position = (self.board.x.as_usize()) | (self.board.o.as_usize()) << 9;
+        let position = (self.board.x.as_u32()) | (self.board.o.as_u32()) << 9;
         match position {
             0x00 | 0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40 | 0x80 | 0x100 | 0x202
             | 0x208 | 0x20a | 0x20c | 0x210 | 0x212 | 0x214 | 0x218 | 0x230 | 0x242 | 0x250
