@@ -1,9 +1,10 @@
 use core::fmt::Display;
 use core::fmt::Formatter;
+use core::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, Not, Shl, Shr};
 
 /// `BitBoard` is a u16, but only 9 bits are used.
 #[derive(Clone, Copy, PartialEq, Eq)]
-pub struct BitBoard(pub u16);
+pub struct BitBoard(u16);
 
 impl Display for BitBoard {
     fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
@@ -82,6 +83,16 @@ impl BitBoard {
         1 << 8,
     ];
 
+    #[must_use]
+    pub const fn new(bits: u16) -> Self {
+        Self(bits)
+    }
+
+    #[must_use]
+    pub const fn as_usize(&self) -> usize {
+        self.0 as usize
+    }
+
     pub fn set(&mut self, index: u8) {
         self.0 |= 1 << index;
     }
@@ -102,8 +113,13 @@ impl BitBoard {
     }
 
     #[must_use]
+    pub fn first(&self) -> u32 {
+        self.0.trailing_zeros()
+    }
+
+    #[must_use]
     pub fn pop(&mut self) -> u32 {
-        let index = self.0.trailing_zeros();
+        let index = self.first();
         self.0 &= self.0 - 1;
         index
     }
@@ -118,5 +134,54 @@ impl BitBoard {
             || self.contains(&Self::RIGHT_COLUMN)
             || self.contains(&Self::TOP_LEFT_DIAGONAL)
             || self.contains(&Self::TOP_RIGHT_DIAGONAL)
+    }
+}
+
+macro_rules! implement_op {
+    ($op:ident, $name:ident, $operator:tt) => {
+        impl $op<BitBoard> for BitBoard {
+            type Output = BitBoard;
+
+            fn $name(self, rhs: BitBoard) -> Self::Output {
+               Self(self.0 $operator rhs.0)
+            }
+        }
+    };
+}
+macro_rules! implement_assign_op {
+    ($op:ident, $name:ident, $operator:tt) => {
+        impl $op<BitBoard> for BitBoard {
+            fn $name(&mut self, rhs: Self) {
+                *self = Self(self.0 $operator rhs.0)
+            }
+        }
+    };
+}
+implement_op!(BitOr, bitor, |);
+implement_assign_op!(BitOrAssign, bitor_assign, |);
+
+implement_op!(BitAnd, bitand, &);
+implement_assign_op!(BitAndAssign, bitand_assign, &);
+
+macro_rules! shift {
+    ($op:ident, $name:ident, $operator:tt) => {
+        impl $op<u8> for BitBoard {
+            type Output = BitBoard;
+
+            fn $name(self, rhs: u8) -> Self::Output {
+               Self(self.0 $operator rhs)
+            }
+        }
+    };
+}
+
+shift!(Shl, shl, <<);
+shift!(Shr, shr, >>);
+
+impl Not for BitBoard {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        Self(!self.0)
     }
 }

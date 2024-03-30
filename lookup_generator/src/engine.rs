@@ -22,7 +22,7 @@ impl Engine {
         }
     }
     pub fn search(&mut self, board: Board, x_to_move: bool) -> Score {
-        let index = (board.x.0 as usize) | (board.o.0 as usize) << 9;
+        let index = board.x.as_usize() | board.o.as_usize() << 9;
 
         let saved = self.transposition_table[index];
         if saved != Score::UNKNOWN {
@@ -37,14 +37,14 @@ impl Engine {
 
         let mut best_score = Score::UNKNOWN;
 
-        let mut not_occupied = BitBoard(!(board.x.0 | board.o.0) & BitBoard::FULL.0);
+        let mut not_occupied = !(board.x | board.o) & BitBoard::FULL;
         while not_occupied != BitBoard::EMPTY {
-            let place = 1 << not_occupied.pop();
+            let place = BitBoard::new(1 << not_occupied.pop());
             let mut new_board = board;
             if x_to_move {
-                new_board.x.0 |= place;
+                new_board.x |= place;
             } else {
-                new_board.o.0 |= place;
+                new_board.o |= place;
             };
             let score = -self.search(new_board, !x_to_move).0;
             if score > best_score.0 {

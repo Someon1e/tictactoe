@@ -6,6 +6,7 @@ use engine::Engine;
 use std::{
     fs,
     io::{stdout, Write},
+    time::Instant,
 };
 use tictactoe::board::{bit_board::BitBoard, Board};
 
@@ -29,8 +30,8 @@ fn main() {
         #[allow(clippy::cast_possible_truncation)]
         let (x, o) = {
             (
-                BitBoard((position & 0b111_111_111) as u16),
-                BitBoard((position >> 9) as u16),
+                BitBoard::new((position & 0b111_111_111) as u16),
+                BitBoard::new((position >> 9) as u16),
             )
         };
 
@@ -63,8 +64,8 @@ fn main() {
         #[allow(clippy::cast_possible_truncation)]
         let (x, o) = {
             (
-                BitBoard((position & 0b111_111_111) as u16),
-                BitBoard((position >> 9) as u16),
+                BitBoard::new((position & 0b111_111_111) as u16),
+                BitBoard::new((position >> 9) as u16),
             )
         };
 

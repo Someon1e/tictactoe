@@ -47,7 +47,7 @@ impl<'a> Game<'a> {
     }
     #[allow(clippy::too_many_lines)]
     pub fn evaluate_for_x(&self) -> i8 {
-        match (self.board.x.0 as usize) | (self.board.o.0 as usize) << 9 {
+        match (self.board.x.as_usize()) | (self.board.o.as_usize()) << 9 {
             0x00 | 0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40 | 0x80 | 0x100 | 0x202
             | 0x208 | 0x20a | 0x20c | 0x210 | 0x212 | 0x214 | 0x218 | 0x230 | 0x242 | 0x250
             | 0x260 | 0x284 | 0x290 | 0x302 | 0x308 | 0x310 | 0x405 | 0x40c | 0x421 | 0x444
@@ -700,17 +700,17 @@ impl<'a> Game<'a> {
     pub fn ai_turn(&mut self) -> bool {
         let (mut best_moves, mut best_score) = (BitBoard::EMPTY, -1);
         for place in BitBoard::PLACES {
-            if BitBoard(self.board.x.0 | self.board.o.0).contains(&BitBoard(place)) {
+            if (self.board.x | self.board.o).contains(&BitBoard::new(place)) {
                 continue;
             }
 
             let previous = if self.x_to_move {
                 let previous = self.board.x;
-                self.board.x.0 |= place;
+                self.board.x |= BitBoard::new(place);
                 previous
             } else {
                 let previous = self.board.o;
-                self.board.o.0 |= place;
+                self.board.o |= BitBoard::new(place);
                 previous
             };
             // Skip switching self.x_to_move, because it won't be used anyway
@@ -725,7 +725,7 @@ impl<'a> Game<'a> {
                     best_score = evaluation;
                     best_moves = BitBoard::EMPTY;
                 }
-                best_moves.0 |= place;
+                best_moves |= BitBoard::new(place);
             }
 
             if self.x_to_move {
@@ -745,7 +745,7 @@ impl<'a> Game<'a> {
 
         #[allow(clippy::cast_possible_truncation)]
         {
-            bit_board.0 |= 1 << best_moves.0.trailing_zeros() as u16;
+            *bit_board |= BitBoard::new(1 << best_moves.first() as u16);
         }
 
         self.x_to_move = !self.x_to_move;
@@ -756,7 +756,7 @@ impl<'a> Game<'a> {
         loop {
             writeln!(self.stdout, "{}", self.board).unwrap();
 
-            if (self.board.x.0 | self.board.o.0) == 0b111_111_111 {
+            if (self.board.x | self.board.o) == BitBoard::FULL {
                 writeln!(self.stdout, "Draw!").unwrap();
                 return;
             }
