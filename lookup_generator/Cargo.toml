@@ -7,3 +7,7 @@ edition = "2021"
 
 [dependencies]
 tictactoe = { path = "../tictactoe" }
+
+[profile.release]
+lto = true
+codegen-units = 1
