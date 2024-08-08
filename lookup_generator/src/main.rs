@@ -5,7 +5,7 @@
 use engine::Engine;
 use std::{
     fs,
-    io::{stdout, Write}
+    io::{stdout, Write},
 };
 use tictactoe::board::{bit_board::BitBoard, Board};
 

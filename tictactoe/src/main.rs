@@ -700,7 +700,7 @@ impl<'a> Game<'a> {
     }
     pub fn ai_turn(&mut self) -> bool {
         let (mut best_moves, mut best_score) = (BitBoard::EMPTY, -1);
-        
+
         let mut not_occupied = !(self.board.x | self.board.o) & BitBoard::FULL;
         while not_occupied != BitBoard::EMPTY {
             let place = BitBoard::new(1 << not_occupied.pop());
