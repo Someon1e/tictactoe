@@ -69,7 +69,7 @@ fn main() {
         };
 
         let x_to_move = o.count() == x.count();
-        let text = &format!("{position:#04x} | ");
+        let text = &format!("{position:#x} | ");
         match if x_to_move { *score } else { Score(-score.0) } {
             Score::LOSING => losing.push_str(text),
             Score::DRAWING => drawing.push_str(text),
