@@ -47,7 +47,7 @@ fn main() {
         writeln!(stdout).unwrap();
     }
 
-    // Generate rust match expression
+    // Generate Rust match expression
     let mut matcher = String::new();
     matcher.push_str("match position {\n");
 
